@@ -1,0 +1,47 @@
+%option noyywrap nodefault yylineno
+%{
+#include <stdio.h>
+#include "Parser.tab.h" // the output of bison on .y
+#include "Parser.hpp"
+void yyerror (char*); // we need to forward declare these functions ,
+int yyparse (void); // don ’t worry about them
+%}
+
+
+EXP ([Ee][-+]?[0-9]+)
+
+%%
+"cone"		{yylval.shape_type = ST_CONE; cout << "Saw cone." << endl; return SHAPE;}
+"cylinder"	{yylval.shape_type = ST_CYLINDER; return SHAPE;}
+"sphere"	{yylval.shape_type = ST_SPHERE; return SHAPE;}
+
+"camera"		{return CAMERA;}
+"light_source" 	{return LIGHT;}
+
+"union"			{yylval.csg_type = CSG_UNION; return CSG;}
+"intersection" 	{yylval.csg_type = CSG_INTERSECTION; return CSG;}
+"difference"	{yylval.csg_type = CSG_DIFFERENCE; return CSG;}
+"merge" 		{yylval.csg_type = CSG_MERGE; return CSG;}
+
+
+"{" |
+"}" |
+"<" |
+">" |
+","			{return yytext[0];}
+
+
+"-"?[0-9]+"."[0-9]*{EXP}? |
+"-"?"."[0-9]+{EXP}? { yylval.float_token = atof(yytext); return T_FLOAT; }
+
+"-"?[0-9]+ {yylval.int_token = atoi(yytext); return T_INT;}
+
+[a-zA-Z][a-zA-Z0-9]*		{strcpy(yylval.str, yytext); return T_STRING;}
+
+^\n 		{};
+\n 			{return EOL;};
+[ \t]+		{} // do nothing on whitespace
+
+
+%%
+void yyerror (char* str) { printf("ERROR : %s\n", str);}

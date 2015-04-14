@@ -1,0 +1,74 @@
+#include "Parser.hpp"
+
+template <class T>
+void printVec(const vector <T> &v) {
+	cout << "Vector (" << v.size() << "): <"; 
+	for (auto it = v.begin(); it != v.end(); ++it)
+		cout << *it << ", ";
+	cout << "\b\b>";
+}
+
+void Parser::printParams(const vector<Param> &v) {
+	for (auto it = v.begin(); it != v.end(); ++it) {
+		cout << it->first << "\t";
+		if (it->second.type() == typeid(float))
+			cout << boost::any_cast<float> (it->second);
+		else if (it->second.type() == typeid(vector <float>))
+			printVec(boost::any_cast <vector <float> > (it->second));
+		else if (it->second.type() == typeid(float*)) {
+			float *f = boost::any_cast <float*> (it->second);
+			cout << f[0] << " " << f[1] << " " << f[2];
+		}
+		cout << endl;
+	}
+}
+
+void Parser::clearParams(vector <Param> &v) {
+	v.clear();
+}
+
+
+bool Parser::addShape(int st, const vector <Parser::Param> &params) {
+	
+	switch (st) {
+		case ST_CONE:
+			return addCone(params);
+			break;
+		case ST_CYLINDER:
+			break;
+		case ST_SPHERE:
+			return addSphere(params);
+			break;
+	}
+	return false;
+}
+
+bool Parser::addCamera(const vector <Parser::Param> &params) {
+	cout << "-----Adding camera with: " << endl;
+	printParams(params);
+	cout << "-----" << endl;
+	return true;
+}
+
+bool Parser::addLight(const vector <Parser::Param> &params) {
+	cout << "-----Adding light with: " << endl;
+	printParams(params);
+	cout << "-----" << endl;
+	return true;
+}
+
+bool Parser::addCone(const vector <Parser::Param> &params) {
+	cout << "-----Making cone with: " << endl;
+	printParams(params);
+	cout << "-----" << endl;
+	return true;
+}
+
+bool Parser::addSphere(const vector <Parser::Param> &params) {
+	cout << "-----Making sphere with: " << endl;
+	printParams(params);
+	cout << "-----" << endl;
+	return true;
+}
+
+

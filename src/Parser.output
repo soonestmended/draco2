@@ -1,0 +1,648 @@
+Terminals unused in grammar
+
+   T_INT
+   ENDFILE
+   TEXTURE
+
+
+State 17 conflicts: 3 shift/reduce
+
+
+Grammar
+
+    0 $accept: scene_description $end
+
+    1 scene_description: scene_description statement
+    2                  | statement
+
+    3 statement: primitive
+    4          | camera
+    5          | light
+
+    6 camera: CAMERA LCB option_list RCB
+
+    7 light: LIGHT LCB primitive option_list RCB
+
+    8 primitive: SHAPE LCB option_list RCB
+    9          | CSG LCB primitive_list RCB
+
+   10 primitive_list: primitive_list primitive
+   11               | primitive_list option_list
+   12               | primitive
+   13               | option_list
+
+   14 sep: ','
+   15    | EOL
+   16    | ',' EOL
+
+   17 option_list: option_list sep option
+   18            | option
+
+   19 option: material_statement
+   20       | t_vector
+   21       | T_FLOAT
+   22       | T_STRING T_FLOAT
+   23       | T_STRING t_vector
+   24       | T_STRING T_STRING
+   25       | T_STRING
+
+   26 material_statement: MATERIAL LCB option_list RCB
+
+   27 t_vector: '<' T_FLOAT ',' T_FLOAT '>'
+   28         | '<' T_FLOAT ',' T_FLOAT ',' T_FLOAT '>'
+   29         | '<' T_FLOAT ',' T_FLOAT ',' T_FLOAT ',' T_FLOAT '>'
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+',' (44) 14 16 27 28 29
+'<' (60) 27 28 29
+'>' (62) 27 28 29
+error (256)
+T_INT (258)
+T_FLOAT (259) 21 22 27 28 29
+T_STRING (260) 22 23 24 25
+CSG (261) 9
+LIGHT (262) 7
+MATERIAL (263) 26
+SHAPE (264) 8
+CAMERA (265) 6
+ENDFILE (266)
+EOL (267) 15 16
+TEXTURE (268)
+LCB (269) 6 7 8 9 26
+RCB (270) 6 7 8 9 26
+
+
+Nonterminals, with rules where they appear
+
+$accept (19)
+    on left: 0
+scene_description (20)
+    on left: 1 2, on right: 0 1
+statement (21)
+    on left: 3 4 5, on right: 1 2
+camera (22)
+    on left: 6, on right: 4
+light (23)
+    on left: 7, on right: 5
+primitive (24)
+    on left: 8 9, on right: 3 7 10 12
+primitive_list (25)
+    on left: 10 11 12 13, on right: 9 10 11
+sep (26)
+    on left: 14 15 16, on right: 17
+option_list (27)
+    on left: 17 18, on right: 6 7 8 11 13 17 26
+option (28)
+    on left: 19 20 21 22 23 24 25, on right: 17 18
+material_statement (29)
+    on left: 26, on right: 19
+t_vector (30)
+    on left: 27 28 29, on right: 20 23
+
+
+State 0
+
+    0 $accept: . scene_description $end
+
+    CSG     shift, and go to state 1
+    LIGHT   shift, and go to state 2
+    SHAPE   shift, and go to state 3
+    CAMERA  shift, and go to state 4
+
+    scene_description  go to state 5
+    statement          go to state 6
+    camera             go to state 7
+    light              go to state 8
+    primitive          go to state 9
+
+
+State 1
+
+    9 primitive: CSG . LCB primitive_list RCB
+
+    LCB  shift, and go to state 10
+
+
+State 2
+
+    7 light: LIGHT . LCB primitive option_list RCB
+
+    LCB  shift, and go to state 11
+
+
+State 3
+
+    8 primitive: SHAPE . LCB option_list RCB
+
+    LCB  shift, and go to state 12
+
+
+State 4
+
+    6 camera: CAMERA . LCB option_list RCB
+
+    LCB  shift, and go to state 13
+
+
+State 5
+
+    0 $accept: scene_description . $end
+    1 scene_description: scene_description . statement
+
+    $end    shift, and go to state 14
+    CSG     shift, and go to state 1
+    LIGHT   shift, and go to state 2
+    SHAPE   shift, and go to state 3
+    CAMERA  shift, and go to state 4
+
+    statement  go to state 15
+    camera     go to state 7
+    light      go to state 8
+    primitive  go to state 9
+
+
+State 6
+
+    2 scene_description: statement .
+
+    $default  reduce using rule 2 (scene_description)
+
+
+State 7
+
+    4 statement: camera .
+
+    $default  reduce using rule 4 (statement)
+
+
+State 8
+
+    5 statement: light .
+
+    $default  reduce using rule 5 (statement)
+
+
+State 9
+
+    3 statement: primitive .
+
+    $default  reduce using rule 3 (statement)
+
+
+State 10
+
+    9 primitive: CSG LCB . primitive_list RCB
+
+    T_FLOAT   shift, and go to state 16
+    T_STRING  shift, and go to state 17
+    CSG       shift, and go to state 1
+    MATERIAL  shift, and go to state 18
+    SHAPE     shift, and go to state 3
+    '<'       shift, and go to state 19
+
+    primitive           go to state 20
+    primitive_list      go to state 21
+    option_list         go to state 22
+    option              go to state 23
+    material_statement  go to state 24
+    t_vector            go to state 25
+
+
+State 11
+
+    7 light: LIGHT LCB . primitive option_list RCB
+
+    CSG    shift, and go to state 1
+    SHAPE  shift, and go to state 3
+
+    primitive  go to state 26
+
+
+State 12
+
+    8 primitive: SHAPE LCB . option_list RCB
+
+    T_FLOAT   shift, and go to state 16
+    T_STRING  shift, and go to state 17
+    MATERIAL  shift, and go to state 18
+    '<'       shift, and go to state 19
+
+    option_list         go to state 27
+    option              go to state 23
+    material_statement  go to state 24
+    t_vector            go to state 25
+
+
+State 13
+
+    6 camera: CAMERA LCB . option_list RCB
+
+    T_FLOAT   shift, and go to state 16
+    T_STRING  shift, and go to state 17
+    MATERIAL  shift, and go to state 18
+    '<'       shift, and go to state 19
+
+    option_list         go to state 28
+    option              go to state 23
+    material_statement  go to state 24
+    t_vector            go to state 25
+
+
+State 14
+
+    0 $accept: scene_description $end .
+
+    $default  accept
+
+
+State 15
+
+    1 scene_description: scene_description statement .
+
+    $default  reduce using rule 1 (scene_description)
+
+
+State 16
+
+   21 option: T_FLOAT .
+
+    $default  reduce using rule 21 (option)
+
+
+State 17
+
+   22 option: T_STRING . T_FLOAT
+   23       | T_STRING . t_vector
+   24       | T_STRING . T_STRING
+   25       | T_STRING .
+
+    T_FLOAT   shift, and go to state 29
+    T_STRING  shift, and go to state 30
+    '<'       shift, and go to state 19
+
+    T_FLOAT   [reduce using rule 25 (option)]
+    T_STRING  [reduce using rule 25 (option)]
+    '<'       [reduce using rule 25 (option)]
+    $default  reduce using rule 25 (option)
+
+    t_vector  go to state 31
+
+
+State 18
+
+   26 material_statement: MATERIAL . LCB option_list RCB
+
+    LCB  shift, and go to state 32
+
+
+State 19
+
+   27 t_vector: '<' . T_FLOAT ',' T_FLOAT '>'
+   28         | '<' . T_FLOAT ',' T_FLOAT ',' T_FLOAT '>'
+   29         | '<' . T_FLOAT ',' T_FLOAT ',' T_FLOAT ',' T_FLOAT '>'
+
+    T_FLOAT  shift, and go to state 33
+
+
+State 20
+
+   12 primitive_list: primitive .
+
+    $default  reduce using rule 12 (primitive_list)
+
+
+State 21
+
+    9 primitive: CSG LCB primitive_list . RCB
+   10 primitive_list: primitive_list . primitive
+   11               | primitive_list . option_list
+
+    T_FLOAT   shift, and go to state 16
+    T_STRING  shift, and go to state 17
+    CSG       shift, and go to state 1
+    MATERIAL  shift, and go to state 18
+    SHAPE     shift, and go to state 3
+    RCB       shift, and go to state 34
+    '<'       shift, and go to state 19
+
+    primitive           go to state 35
+    option_list         go to state 36
+    option              go to state 23
+    material_statement  go to state 24
+    t_vector            go to state 25
+
+
+State 22
+
+   13 primitive_list: option_list .
+   17 option_list: option_list . sep option
+
+    EOL  shift, and go to state 37
+    ','  shift, and go to state 38
+
+    $default  reduce using rule 13 (primitive_list)
+
+    sep  go to state 39
+
+
+State 23
+
+   18 option_list: option .
+
+    $default  reduce using rule 18 (option_list)
+
+
+State 24
+
+   19 option: material_statement .
+
+    $default  reduce using rule 19 (option)
+
+
+State 25
+
+   20 option: t_vector .
+
+    $default  reduce using rule 20 (option)
+
+
+State 26
+
+    7 light: LIGHT LCB primitive . option_list RCB
+
+    T_FLOAT   shift, and go to state 16
+    T_STRING  shift, and go to state 17
+    MATERIAL  shift, and go to state 18
+    '<'       shift, and go to state 19
+
+    option_list         go to state 40
+    option              go to state 23
+    material_statement  go to state 24
+    t_vector            go to state 25
+
+
+State 27
+
+    8 primitive: SHAPE LCB option_list . RCB
+   17 option_list: option_list . sep option
+
+    EOL  shift, and go to state 37
+    RCB  shift, and go to state 41
+    ','  shift, and go to state 38
+
+    sep  go to state 39
+
+
+State 28
+
+    6 camera: CAMERA LCB option_list . RCB
+   17 option_list: option_list . sep option
+
+    EOL  shift, and go to state 37
+    RCB  shift, and go to state 42
+    ','  shift, and go to state 38
+
+    sep  go to state 39
+
+
+State 29
+
+   22 option: T_STRING T_FLOAT .
+
+    $default  reduce using rule 22 (option)
+
+
+State 30
+
+   24 option: T_STRING T_STRING .
+
+    $default  reduce using rule 24 (option)
+
+
+State 31
+
+   23 option: T_STRING t_vector .
+
+    $default  reduce using rule 23 (option)
+
+
+State 32
+
+   26 material_statement: MATERIAL LCB . option_list RCB
+
+    T_FLOAT   shift, and go to state 16
+    T_STRING  shift, and go to state 17
+    MATERIAL  shift, and go to state 18
+    '<'       shift, and go to state 19
+
+    option_list         go to state 43
+    option              go to state 23
+    material_statement  go to state 24
+    t_vector            go to state 25
+
+
+State 33
+
+   27 t_vector: '<' T_FLOAT . ',' T_FLOAT '>'
+   28         | '<' T_FLOAT . ',' T_FLOAT ',' T_FLOAT '>'
+   29         | '<' T_FLOAT . ',' T_FLOAT ',' T_FLOAT ',' T_FLOAT '>'
+
+    ','  shift, and go to state 44
+
+
+State 34
+
+    9 primitive: CSG LCB primitive_list RCB .
+
+    $default  reduce using rule 9 (primitive)
+
+
+State 35
+
+   10 primitive_list: primitive_list primitive .
+
+    $default  reduce using rule 10 (primitive_list)
+
+
+State 36
+
+   11 primitive_list: primitive_list option_list .
+   17 option_list: option_list . sep option
+
+    EOL  shift, and go to state 37
+    ','  shift, and go to state 38
+
+    $default  reduce using rule 11 (primitive_list)
+
+    sep  go to state 39
+
+
+State 37
+
+   15 sep: EOL .
+
+    $default  reduce using rule 15 (sep)
+
+
+State 38
+
+   14 sep: ',' .
+   16    | ',' . EOL
+
+    EOL  shift, and go to state 45
+
+    $default  reduce using rule 14 (sep)
+
+
+State 39
+
+   17 option_list: option_list sep . option
+
+    T_FLOAT   shift, and go to state 16
+    T_STRING  shift, and go to state 17
+    MATERIAL  shift, and go to state 18
+    '<'       shift, and go to state 19
+
+    option              go to state 46
+    material_statement  go to state 24
+    t_vector            go to state 25
+
+
+State 40
+
+    7 light: LIGHT LCB primitive option_list . RCB
+   17 option_list: option_list . sep option
+
+    EOL  shift, and go to state 37
+    RCB  shift, and go to state 47
+    ','  shift, and go to state 38
+
+    sep  go to state 39
+
+
+State 41
+
+    8 primitive: SHAPE LCB option_list RCB .
+
+    $default  reduce using rule 8 (primitive)
+
+
+State 42
+
+    6 camera: CAMERA LCB option_list RCB .
+
+    $default  reduce using rule 6 (camera)
+
+
+State 43
+
+   17 option_list: option_list . sep option
+   26 material_statement: MATERIAL LCB option_list . RCB
+
+    EOL  shift, and go to state 37
+    RCB  shift, and go to state 48
+    ','  shift, and go to state 38
+
+    sep  go to state 39
+
+
+State 44
+
+   27 t_vector: '<' T_FLOAT ',' . T_FLOAT '>'
+   28         | '<' T_FLOAT ',' . T_FLOAT ',' T_FLOAT '>'
+   29         | '<' T_FLOAT ',' . T_FLOAT ',' T_FLOAT ',' T_FLOAT '>'
+
+    T_FLOAT  shift, and go to state 49
+
+
+State 45
+
+   16 sep: ',' EOL .
+
+    $default  reduce using rule 16 (sep)
+
+
+State 46
+
+   17 option_list: option_list sep option .
+
+    $default  reduce using rule 17 (option_list)
+
+
+State 47
+
+    7 light: LIGHT LCB primitive option_list RCB .
+
+    $default  reduce using rule 7 (light)
+
+
+State 48
+
+   26 material_statement: MATERIAL LCB option_list RCB .
+
+    $default  reduce using rule 26 (material_statement)
+
+
+State 49
+
+   27 t_vector: '<' T_FLOAT ',' T_FLOAT . '>'
+   28         | '<' T_FLOAT ',' T_FLOAT . ',' T_FLOAT '>'
+   29         | '<' T_FLOAT ',' T_FLOAT . ',' T_FLOAT ',' T_FLOAT '>'
+
+    ','  shift, and go to state 50
+    '>'  shift, and go to state 51
+
+
+State 50
+
+   28 t_vector: '<' T_FLOAT ',' T_FLOAT ',' . T_FLOAT '>'
+   29         | '<' T_FLOAT ',' T_FLOAT ',' . T_FLOAT ',' T_FLOAT '>'
+
+    T_FLOAT  shift, and go to state 52
+
+
+State 51
+
+   27 t_vector: '<' T_FLOAT ',' T_FLOAT '>' .
+
+    $default  reduce using rule 27 (t_vector)
+
+
+State 52
+
+   28 t_vector: '<' T_FLOAT ',' T_FLOAT ',' T_FLOAT . '>'
+   29         | '<' T_FLOAT ',' T_FLOAT ',' T_FLOAT . ',' T_FLOAT '>'
+
+    ','  shift, and go to state 53
+    '>'  shift, and go to state 54
+
+
+State 53
+
+   29 t_vector: '<' T_FLOAT ',' T_FLOAT ',' T_FLOAT ',' . T_FLOAT '>'
+
+    T_FLOAT  shift, and go to state 55
+
+
+State 54
+
+   28 t_vector: '<' T_FLOAT ',' T_FLOAT ',' T_FLOAT '>' .
+
+    $default  reduce using rule 28 (t_vector)
+
+
+State 55
+
+   29 t_vector: '<' T_FLOAT ',' T_FLOAT ',' T_FLOAT ',' T_FLOAT . '>'
+
+    '>'  shift, and go to state 56
+
+
+State 56
+
+   29 t_vector: '<' T_FLOAT ',' T_FLOAT ',' T_FLOAT ',' T_FLOAT '>' .
+
+    $default  reduce using rule 29 (t_vector)

@@ -1,0 +1,22 @@
+Turn a poem into a visualization
+
+- break text into syllables
+- obtain phoneme representation of syllables
+- now we define a distance metric between syllables based on their phonemes
+- text is tokenized into syllables; these should be converted to coordinates: 
+	- vowel, leading consonant, trailing consonant?
+	- gives a triple, which can be used to determine color
+- step 1: break text into colors
+- turn syllables into polygons?
+- 3D spiral with each syllable a 3D shape?
+- 
+
+
+
+
+============================
+Ray tracer next steps
+- add triangle class
+- get area lights working with triangles
+- fix up diffuse material class to do Lambertian sampling
+- 

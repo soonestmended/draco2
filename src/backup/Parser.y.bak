@@ -1,0 +1,68 @@
+%{
+#include "Parser.hpp"
+
+extern int yylex();
+extern void yyerror (char*);
+
+
+using namespace std;
+using namespace Parser;
+
+vector <Param> currentOptions = vector <Param>();
+%}
+	// the different types of tokens we want to return
+%language "c++"
+%define api.value.type variant
+
+
+	// list the different tokens of each type
+%token <int> T_INT
+%token <float> T_FLOAT
+%token <string> T_STRING
+%token <int> SHAPE
+%token <int> CSG
+%token CAMERA LIGHT ENDFILE
+
+%type <int> light  
+
+// indicate which of the below nodes is the root of the parse tree
+%start scene_description
+
+%%
+scene_description : scene_description statement
+| 
+;
+
+statement : primitive {}
+| camera {addCamera(currentOptions);}
+| light {addLight(currentOptions);}
+;
+
+camera: CAMERA '{' option_list '}' {}
+;
+
+light: LIGHT '{' option_list '}' {$$ = 1;}
+;
+
+primitive : SHAPE '{' option_list '}' {addShape($1, currentOptions); clearParams(currentOptions);}
+| csg {cout << "Saw a CSG -- not yet implemented.\n";}
+;
+
+csg: CSG '{' option_list '}' {}
+;
+
+option_list: option_list option {}
+| option {}
+;
+
+option: T_STRING T_FLOAT {currentOptions.push_back(Param($1, $2));}
+| T_STRING '<' T_FLOAT ',' T_FLOAT ',' T_FLOAT '>' {
+	vector <float> v; v.reserve(3);
+	v.push_back($3); 
+	v.push_back($5);
+	v.push_back($7);
+	// printf("assigning vector: %f, %f, %f\n", $3, $5, $7);
+	currentOptions.push_back(Param($1, boost::any(v))); }
+;
+
+

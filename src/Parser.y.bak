@@ -1,0 +1,107 @@
+%{
+#include "Draco2.hpp"
+#include "Parser.hpp"
+#include <iostream>
+#include <vector>
+
+extern int yylex();
+
+using namespace std;
+
+ParamSet ps = ParamSet();
+
+%}
+
+%union {
+	char str[80];
+	int int_token;
+	float float_token;
+	int shape_type;
+	int csg_type;
+	std::vector <float>* vector_token;
+	ParamSet *paramset_token;
+}
+
+%parse-param {Parser* parser}
+
+%token <int_token> T_INT
+%token <float_token> T_FLOAT
+%token <str> T_STRING
+%token <int_token> SHAPE
+%token <int_token> CSG
+%token CAMERA LIGHT ENDFILE EOL MATERIAL TEXTURE
+
+%type <vector_token> t_vector
+%type <paramset_token> t_paramset
+%type <int_token> light  
+
+%start scene_description
+
+%%
+scene_description 
+: scene_description statement
+| 
+;
+
+statement 
+: primitive {}
+| camera {parser->addCamera(ps); ps.clear();}
+| light {parser->addLight(ps); ps.clear();}
+;
+
+camera
+: CAMERA '{' EOL option_list '}' EOL {}
+| CAMERA '{' option_list '}' EOL {}
+;
+
+light
+: LIGHT '{' EOL option_list '}' EOL {$$ = 1;}
+| LIGHT '{' option_list '}' EOL {$$ = 1;}
+;
+
+primitive
+: SHAPE '{' EOL option_list '}' EOL {parser->addShape($1, ps); ps.clear();}
+| SHAPE '{' option_list '}' EOL {parser->addShape($1, ps); ps.clear();}
+| SHAPE '{' EOL option_list '}' {parser->addShape($1, ps); ps.clear();}
+| SHAPE '{' option_list '}' {parser->addShape($1, ps); ps.clear();}
+| csg {cout << "Saw a CSG -- not yet implemented.\n";}
+;
+
+csg
+: CSG '{' EOL option_list '}' {}
+| CSG '{' option_list '}' {}
+;
+
+option_list
+: option sep option_list
+| option EOL
+| option
+|
+;
+
+sep: ',' | EOL | ',' EOL
+
+option
+: material_statement {ps.addParam("material", $1);}
+| T_STRING T_FLOAT {ps.addParam($1, $2);}
+| T_STRING t_vector {ps.addParam($1, $2);}
+| t_vector {ps.addParam("anon_vector", $1);}
+| T_FLOAT {ps.addParam("anon_float", $1);}
+| T_STRING T_STRING {ps.addParam($1, string($2));}
+| T_STRING {ps.addParam("anon_string", string($1));}
+;
+
+material_statement
+: MATERIAL '{' EOL option_list '}' EOL {}
+| MATERIAL '{' option_list '}' EOL {}
+| MATERIAL '{' EOL option_list '}' {}
+| MATERIAL '{' option_list '}' {}
+;
+
+t_vector
+: '<' T_FLOAT ',' T_FLOAT '>' {$$ = new std::vector <float>; $$->push_back($2); $$->push_back($4);}
+| '<' T_FLOAT ',' T_FLOAT ',' T_FLOAT '>' {$$ = new std::vector <float>; $$->push_back($2); $$->push_back($4); $$->push_back($6);}
+| '<' T_FLOAT ',' T_FLOAT ',' T_FLOAT ',' T_FLOAT '>' {$$ = new std::vector <float>; $$->push_back($2); $$->push_back($4); $$->push_back($6); $$->push_back($8);}
+;
+
+
